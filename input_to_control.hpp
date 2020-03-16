@@ -26,11 +26,31 @@ namespace TerminalControl
         G3
     };
 
+    enum class CountryEncoding
+    {
+        _DEFAULT_CASE_IS_ERROR_IF_GSET_,
+        DrawingMode, // 0, DEC Special Character and Line Drawing Set
+        UnitedKingdom,
+        UnitedStates,
+        Dutch,
+        Finnish,
+        French,
+        FrenchCanadian,
+        German,
+        Italian,
+        NorwegianDanish,
+        Spanish,
+        Swedish,
+        Swiss
+    };
+
     struct TerminalMode
     {
         ControlBits bits;
         int ansiConformanceLevel;
         CharacterSet charSet;
+        CountryEncoding countryEnc;
+        Keypad keypadMode;
         char vt220charSet; // ESC+C
     };
 
@@ -54,8 +74,8 @@ namespace TerminalControl
          *  ^: 220
          *  F1-F12: 112-123
          *  tab: 9
-         *  ß: 219
-         *  ´: 221
+         *  ess-zett: 219
+         *  back-tick: 221
          *  backspace: 8
          *  enter: 13
          *  left-arrow: 37
@@ -72,9 +92,9 @@ namespace TerminalControl
          *  shift lock: 20
          *  scroll: 145
          *  pause: 19
-         *  ö: 192
-         *  ä: 222
-         *  ü: 186
+         *  oe: 192
+         *  ae: 222
+         *  ue: 186
          */
         int keyCode;
         bool ctrl;
@@ -83,4 +103,13 @@ namespace TerminalControl
     };
 
     std::string inputToSequence(Input const& input, TerminalMode mode);
+
+    /**
+     * @brief changeCharacterSet Set character set / encoding
+     * @param set The character set to choose
+     * @param enc Additional encoding info, used if set is G0 to G3
+     */
+    std::string changeCharacterSet(CharacterSet set, CountryEncoding enc = CountryEncoding::_DEFAULT_CASE_IS_ERROR_IF_GSET_, bool returnAsString = false);
+
+    void setControlBitness(ControlBits bits);
 }
