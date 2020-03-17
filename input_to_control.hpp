@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 // https://www.xfree86.org/current/ctlseqs.html
 
@@ -44,6 +45,33 @@ namespace TerminalControl
         Swiss
     };
 
+    // Insert Replace Mode
+    enum class IRMode
+    {
+        Insert,
+        Replace
+    };
+
+    enum class ReportCommands
+    {
+        CursorPosition = 6,
+        PrinterStatus = 15,
+        UdkStatus = 25,
+        KeyboardStatus = 26,
+        LocatorStatus = 53,
+        LocatorStatus2 = 55,
+        LocatorType = 56,
+        MacroSpace = 62,
+        DataIntegrity = 75,
+        MultiSessionConfig = 85
+    };
+
+    enum class DECCKM
+    {
+        Normal,
+        Application
+    };
+
     struct TerminalMode
     {
         ControlBits bits;
@@ -52,6 +80,8 @@ namespace TerminalControl
         CountryEncoding countryEnc;
         Keypad keypadMode;
         char vt220charSet; // ESC+C
+        DECCKM decckm;
+        bool altSendsEscape;
     };
 
     struct Input
@@ -100,16 +130,82 @@ namespace TerminalControl
         bool ctrl;
         bool alt;
         bool shift;
+        bool altGr;
     };
 
     std::string inputToSequence(Input const& input, TerminalMode mode);
 
     /**
-     * @brief changeCharacterSet Set character set / encoding
-     * @param set The character set to choose
-     * @param enc Additional encoding info, used if set is G0 to G3
+     * @brief The TerminalController class Sends controls to terminal for mode and character set switching.
      */
-    std::string changeCharacterSet(CharacterSet set, CountryEncoding enc = CountryEncoding::_DEFAULT_CASE_IS_ERROR_IF_GSET_, bool returnAsString = false);
+    class TerminalController
+    {
+    public:
+        /**
+         * @brief changeCharacterSet Set character set / encoding
+         * @param set The character set to choose
+         * @param enc Additional encoding info, used if set is G0 to G3
+         */
+        std::string changeCharacterSet(CharacterSet set, CountryEncoding enc = CountryEncoding::_DEFAULT_CASE_IS_ERROR_IF_GSET_, bool returnAsString = false);
 
-    void setControlBitness(ControlBits bits);
+        /**
+         * @brief switchToStandardCharacterSet Switches to G0
+         */
+        void switchToStandardCharacterSet();
+
+        /**
+         * @brief switchToStandardCharacterSet Switches to G1
+         */
+        void switchToAlternateCharacterSet();
+
+        /**
+         * @brief setControlBitness Set Terminal control sequence bitness.
+         * @param bits
+         */
+        void setControlBitness(ControlBits bits);
+
+        /**
+         * @brief getTerminalId print terminal id to stdin.
+         */
+        void getTerminalId();
+
+        /**
+         * @brief setMode CSI Pm h Set Mode (SM)
+         * @param modeParms
+         */
+        void setMode(std::vector <int> const& modeParams, bool set = true);
+
+        /**
+         * @brief setMode CSI Pm h Set Mode (SM)
+         * @param modeParms
+         */
+        void setPrivateMode(std::vector <int> const& modeParams, bool set = true);
+
+        /**
+         * @brief setKeyboardActionMode Set action mode.
+         */
+        void lockKeyboard(bool lock);
+
+        void setIrMode(IRMode mode);
+
+        /**
+         * @brief enableMouseMode Enable sending of mouse clicks
+         */
+        void enableMouseMode();
+
+        /**
+         * @brief enableFocusDectection Send me focus changes of the terminal.
+         */
+        void enableFocusDectection();
+
+        /**
+         * @brief printReport Request several terminal reports.
+         * @param number
+         */
+        void printReport(std::vector <int> const& params);
+        void printReport(std::vector <ReportCommands> const& params);
+
+    private:
+        ControlBits bits_ = ControlBits::S7C1T;
+    };
 }
