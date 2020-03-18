@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 
@@ -7,49 +9,56 @@ namespace TerminalControl
 {
     enum class ControlBits
     {
-        S7C1T,
-        S8C1T
+        S7C1T = 7,
+        S8C1T = 8
     };
 
     enum class Keypad
     {
-        application, // DECPAM
-        normal // DECPNM
+        Normal = 0, // DECPNM
+        Application = 1 // DECPAM
     };
 
     enum class CharacterSet
     {
-        ISO8859_1,
-        UTF8,
-        G0,
-        G1,
-        G2,
-        G3
+        ISO8859_1 = 0,
+        UTF8 = 1,
+        G0 = 2,
+        G1 = 3,
+        G2 = 4,
+        G3 = 5
     };
 
     enum class CountryEncoding
     {
         _DEFAULT_CASE_IS_ERROR_IF_GSET_,
-        DrawingMode, // 0, DEC Special Character and Line Drawing Set
-        UnitedKingdom,
-        UnitedStates,
-        Dutch,
-        Finnish,
-        French,
-        FrenchCanadian,
-        German,
-        Italian,
-        NorwegianDanish,
-        Spanish,
-        Swedish,
-        Swiss
+        DrawingMode = 1, // 0, DEC Special Character and Line Drawing Set
+        UnitedKingdom = 2,
+        UnitedStates = 3,
+        Dutch = 4,
+        Finnish = 5,
+        French = 6,
+        FrenchCanadian = 7,
+        German = 8,
+        Italian = 9,
+        NorwegianDanish = 10,
+        Spanish = 11,
+        Swedish = 12,
+        Swiss = 13,
+        Turkish = 14,
+        Portuguese = 15,
+        Hebrew = 16,
+        Greek = 17,
+        Supplemental = 18,
+        Technical = 19,
+        Russian = 20
     };
 
     // Insert Replace Mode
     enum class IRMode
     {
-        Insert,
-        Replace
+        Insert = 0,
+        Replace = 1
     };
 
     enum class ReportCommands
@@ -68,8 +77,8 @@ namespace TerminalControl
 
     enum class DECCKM
     {
-        Normal,
-        Application
+        Normal = 0,
+        Application = 1
     };
 
     struct TerminalMode
@@ -79,7 +88,6 @@ namespace TerminalControl
         CharacterSet charSet;
         CountryEncoding countryEnc;
         Keypad keypadMode;
-        char vt220charSet; // ESC+C
         DECCKM decckm;
         bool altSendsEscape;
     };

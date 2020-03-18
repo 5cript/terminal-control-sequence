@@ -22,27 +22,27 @@ namespace TerminalControl
                 return IS7 ? S{'\x1b', '['} : S{'\x9b'};
             }
             // Index
-            std::string ind(ControlBits bits)
+            [[maybe_unused]] std::string ind(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'D'} : S{'\x84'};
             }
             // Next Line
-            std::string nel(ControlBits bits)
+            [[maybe_unused]] std::string nel(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'E'} : S{'\x85'};
             }
             // Tab Set
-            std::string hts(ControlBits bits)
+            [[maybe_unused]] std::string hts(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'H'} : S{'\x88'};
             }
             // Reverse Index
-            std::string ri(ControlBits bits)
+            [[maybe_unused]] std::string ri(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'M'} : S{'\x8d'};
             }
             // Single Shift Select G2
-            std::string ss2(ControlBits bits)
+            [[maybe_unused]] std::string ss2(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'N'} : S{'\x8e'};
             }
@@ -52,47 +52,47 @@ namespace TerminalControl
                 return IS7 ? S{'\x1b', 'O'} : S{'\x8f'};
             }
             // Device Control String
-            std::string dcs(ControlBits bits)
+            [[maybe_unused]] std::string dcs(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'P'} : S{'\x90'};
             }
             // Start of Guarded Area
-            std::string spa(ControlBits bits)
+            [[maybe_unused]] std::string spa(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'V'} : S{'\x96'};
             }
             // End of Guarded Area
-            std::string epa(ControlBits bits)
+            [[maybe_unused]] std::string epa(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'W'} : S{'\x97'};
             }
             // Start of String
-            std::string sos(ControlBits bits)
+            [[maybe_unused]] std::string sos(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'X'} : S{'\x98'};
             }
             // Return Terminal ID
-            std::string decid(ControlBits bits)
+            [[maybe_unused]] std::string decid(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', 'Z'} : S{'\x9a'};
             }
             // String Terminator
-            std::string st(ControlBits bits)
+            [[maybe_unused]] std::string st(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', '\\'} : S{'\x9c'};
             }
             // Operating System Command
-            std::string osc(ControlBits bits)
+            [[maybe_unused]] std::string osc(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', ']'} : S{'\x9d'};
             }
             // Privacy Message
-            std::string pm(ControlBits bits)
+            [[maybe_unused]] std::string pm(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', '^'} : S{'\x9e'};
             }
             // Application Program Command
-            std::string apc(ControlBits bits)
+            [[maybe_unused]] std::string apc(ControlBits bits)
             {
                 return IS7 ? S{'\x1b', '_'} : S{'\x9f'};
             }
@@ -111,7 +111,7 @@ namespace TerminalControl
 
             auto f = [&]()
             {
-                if (scaMode != 0 && mode.keypadMode == Keypad::application)
+                if (scaMode != 0 && mode.keypadMode == Keypad::Application)
                 {
                     if (number != '3' && number != '9')
                         return csi(mode.bits) + S{'1', ';'} + std::to_string(scaMode);
@@ -148,7 +148,7 @@ namespace TerminalControl
         {
             using namespace Controls;
 
-            if (mode.keypadMode == Keypad::application)
+            if (mode.keypadMode == Keypad::Application)
             {
                 if (code == 110)
                     return csi(mode.bits) + S{'3', '~'};
@@ -397,7 +397,7 @@ namespace TerminalControl
         if (isWithin(97, 105))
         {
             auto c = charRelativeToZero(97, '0');
-            if (mode.keypadMode == Keypad::normal)
+            if (mode.keypadMode == Keypad::Normal)
                 return {c};
             else
             {
@@ -584,24 +584,31 @@ namespace TerminalControl
 //#####################################################################################################################
     std::string TerminalController::changeCharacterSet(CharacterSet set, CountryEncoding enc, bool returnAsString)
     {
-        auto getEnc = [&]()
+        auto getEnc = [&]() -> std::string
         {
             switch (enc)
             {
                 case(CountryEncoding::_DEFAULT_CASE_IS_ERROR_IF_GSET_): throw std::runtime_error("you must supply a country encoding when using the GX character sets, X=0,1,2,3");
-                case(CountryEncoding::DrawingMode): return '0';
-                case(CountryEncoding::UnitedKingdom): return 'A';
-                case(CountryEncoding::UnitedStates): return 'B';
-                case(CountryEncoding::Dutch): return '4';
-                case(CountryEncoding::Finnish): return '5';
-                case(CountryEncoding::French): return 'R';
-                case(CountryEncoding::FrenchCanadian): return 'Q';
-                case(CountryEncoding::German): return 'K';
-                case(CountryEncoding::Italian): return 'Y';
-                case(CountryEncoding::NorwegianDanish): return 'E';
-                case(CountryEncoding::Spanish): return 'Z';
-                case(CountryEncoding::Swedish): return 'H';
-                case(CountryEncoding::Swiss): return '=';
+                case(CountryEncoding::DrawingMode): return {'0'};
+                case(CountryEncoding::UnitedKingdom): return {'A'};
+                case(CountryEncoding::UnitedStates): return {'B'};
+                case(CountryEncoding::Dutch): return {'4'};
+                case(CountryEncoding::Finnish): return {'5'};
+                case(CountryEncoding::French): return {'R'};
+                case(CountryEncoding::FrenchCanadian): return {'Q'};
+                case(CountryEncoding::German): return {'K'};
+                case(CountryEncoding::Italian): return {'Y'};
+                case(CountryEncoding::NorwegianDanish): return {'E'};
+                case(CountryEncoding::Spanish): return {'Z'};
+                case(CountryEncoding::Swedish): return {'H'};
+                case(CountryEncoding::Greek): return {'"'};
+                case(CountryEncoding::Swiss): return {'='};
+                case(CountryEncoding::Turkish): return "%2";
+                case(CountryEncoding::Portuguese): return "%6";
+                case(CountryEncoding::Hebrew): return "%=";
+                case(CountryEncoding::Supplemental): return {'<'};
+                case(CountryEncoding::Technical): return {'>'};
+                case(CountryEncoding::Russian): return "&5";
             }
             throw std::runtime_error("passed country encoding is not understood");
         };
